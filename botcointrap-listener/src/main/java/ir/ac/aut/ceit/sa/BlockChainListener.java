@@ -59,7 +59,7 @@ import com.google.common.collect.Lists;
  *         class is written upon PeerMonitor.java and BuildCheckpoints.java in
  *         BitcoinJ projects
  */
-public class StatusMonitor {
+public class BlockChainListener {
 	private NetworkParameters params;
 	private PeerGroup peerGroup;
 	private PeerTableModel peerTableModel;
@@ -72,10 +72,10 @@ public class StatusMonitor {
 
 	public static void main(String[] args) throws Exception {
 		BriefLogFormatter.init();
-		new StatusMonitor();
+		new BlockChainListener();
 	}
 
-	public StatusMonitor() throws UnknownHostException, BlockStoreException {
+	public BlockChainListener() throws UnknownHostException, BlockStoreException {
 		setupNetwork();
 		setupGUI();
 		peerGroup.startAndWait();
@@ -111,7 +111,7 @@ public class StatusMonitor {
 		peerGroup.addPeerDiscovery(new DnsDiscovery(params));
 		//
 
-		peerGroup.setUserAgent("StatusMonitor", "1.0");
+		peerGroup.setUserAgent("BlockChainListener", "1.0");
 
 		peerGroup.addEventListener(new AbstractPeerEventListener() {
 			@Override
