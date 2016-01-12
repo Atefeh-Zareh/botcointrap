@@ -2,7 +2,7 @@ package ir.ac.aut.ceit.sa;
 
 /**
  * 
- * @author Atefeh Zareh Chahoki
+ * @author Atefeh Zareh
  *
  */
 public class HexUtils {

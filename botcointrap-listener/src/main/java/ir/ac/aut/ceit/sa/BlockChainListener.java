@@ -8,22 +8,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -51,7 +63,7 @@ import com.google.bitcoin.utils.Threading;
 import com.google.common.collect.Lists;
 
 /**
- * @author Atefeh Zareh Chahoki
+ * @author Atefeh Zareh
  * 
  *         Shows connected peers in a table view, so you can watch as they come
  *         and go. you can change maximum number of peers that you can use to
@@ -67,22 +79,21 @@ public class BlockChainListener {
 
 	private final HashMap<Peer, String> reverseDnsLookups = new HashMap<Peer, String>();
 
-	private final static Integer SHA_OUT_LENGTH_IN_HEX = 256 / 4;
 	private final static String outFilePath = "d://latestBlockHash.txt";
+	private static final String IMG_PATH = "./src/main/resources/logo.png";
 
 	public static void main(String[] args) throws Exception {
 		BriefLogFormatter.init();
 		new BlockChainListener();
+
 	}
 
-	public BlockChainListener() throws UnknownHostException, BlockStoreException {
-		setupNetwork();
+	public BlockChainListener() throws UnknownHostException,
+			BlockStoreException {
 		setupGUI();
-		peerGroup.startAndWait();
-		peerGroup.downloadBlockChain();
 	}
 
-	private void setupNetwork() throws BlockStoreException,
+	private void setupNetwork(final Date startDateToLog) throws BlockStoreException,
 			UnknownHostException {
 		/*
 		 * Logger is inactive. to see new transactions active it.
@@ -145,14 +156,27 @@ public class BlockChainListener {
 				System.out.println(String.format(
 						"Checkpointing block %s at height %d and prevHash=%s",
 						itsHash, height, prevHash));
-				String hexStr = HexUtils.bytesToHex(itsHash.getBytes());
-				try {
-					writeHash(hexStr);
-				} catch (IOException e) {
-					e.printStackTrace();
+				
+				
+				
+				Date blockDate = block.getHeader().getTime();
+				/*
+				 * log the block hash to file, if blockDate is newer (larger)
+				 * than startDateToLog
+				 */
+				if ((blockDate.compareTo(startDateToLog)) > 0) {
+
+					String hexStr = HexUtils.bytesToHex(itsHash.getBytes());
+					try {
+						writeHash(hexStr, new Date(), block.getHeader().getTime());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-				// checkpoints.put(height, block);
-				// }
+				
+				
+				
+				
 			}
 
 			// private boolean freshBlock(StoredBlock block) {
@@ -163,18 +187,33 @@ public class BlockChainListener {
 		}, Threading.SAME_THREAD);
 	}
 
-	/**
-	 * 
-	 * @param latestHash
-	 *            in hex format
-	 * @throws IOException
-	 */
-	private static void writeHash(String latestHash) throws IOException {
-		FileOutputStream fout = new FileOutputStream(outFilePath);
-		FileChannel channel = fout.getChannel();
-		ByteBuffer buf = ByteBuffer.allocate(SHA_OUT_LENGTH_IN_HEX);
-		buf.clear();
-		buf.put(latestHash.getBytes());
+	static FileChannel channel;
+	static {
+		FileOutputStream fout = null;
+		try {
+			fout = new FileOutputStream(outFilePath);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		channel = fout.getChannel();
+	}
+
+	private static void writeHash(String latestHash, Date receiveDate,
+			Date blockDate) throws IOException {
+		String genaralDateFormat = "(yyyy/MM/dd, HH:mm:ss)";// hh for 12 format
+															// clock and HH for
+															// 24
+		DateFormat dateFormat = new SimpleDateFormat(genaralDateFormat);
+		String receiveDateStr = dateFormat.format(receiveDate);
+		String blockDateStr = dateFormat.format(blockDate);
+		// Integer lineSize = SHA_OUT_LENGTH_IN_HEX+
+		// genaralDateFormat.length()*2 + 2;
+
+		// buf.clear();
+		String line = latestHash + " " + receiveDateStr + " " + blockDateStr
+				+ "\n";
+		ByteBuffer buf = ByteBuffer.allocate(line.length());
+		buf.put(line.getBytes());
 		buf.flip();
 		while (buf.hasRemaining()) {
 			channel.write(buf);
@@ -231,7 +270,7 @@ public class BlockChainListener {
 		JSpinner numPeersSpinner = new JSpinner(spinnerModel);
 		panel.add(instructions);
 		panel.add(numPeersSpinner);
-		window.getContentPane().add(panel, BorderLayout.NORTH);
+		// window.getContentPane().add(panel, BorderLayout.NORTH);
 
 		peerTableModel = new PeerTableModel();
 		JTable peerTable = new JTable(peerTableModel);
@@ -243,8 +282,24 @@ public class BlockChainListener {
 		peerTable.getColumnModel().getColumn(0).setPreferredWidth(300);
 
 		JScrollPane scrollPane = new JScrollPane(peerTable);
-		window.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		// window.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
+		// final JTextArea area = new JTextArea("A");
+		// JButton startBtn = new JButton("Start");
+		// startBtn.addActionListener(new ActionListener() {
+		// public void actionPerformed(ActionEvent e) {
+		// area.setText("B");
+		// }
+		// });
+		//		
+		// window.getContentPane().add(area, BorderLayout.EAST);
+		// window.getContentPane().add(startBtn, BorderLayout.WEST);
+		Timer timer = new Timer(1000, new ActionListener() {
+
+			public void actionPerformed(ActionEvent actionEvent) {
+				peerTableModel.updateFromPeerGroup();
+			}
+		});
 		// zareh
 		/*
 		 * JTextArea jTextArea = new JTextArea(
@@ -255,18 +310,56 @@ public class BlockChainListener {
 		 * window.getContentPane().add(textScrollPane, BorderLayout.SOUTH);
 		 */
 
+		// logo picture
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File(IMG_PATH));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ImageIcon logoImage = new ImageIcon(img);
+		JLabel logoLable = new JLabel(logoImage);
+
+		// Log
+		JTextArea jtxtLog = new JTextArea(
+				"program is starting to get all Bitcoin block chain... ");
+		jtxtLog.setSize(720, 240);
+		jtxtLog.setEditable(false);
+		jtxtLog.setAutoscrolls(true);
+		jtxtLog.setEditable(true);
+
+		JScrollPane jtxtLogScrollPane = new JScrollPane(jtxtLog);
+		jtxtLogScrollPane.setSize(720, 240);
+
+		// choose data and time
+		JSpinner timeSpinner = new JSpinner(new SpinnerDateModel());
+		JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner,
+				"yyyy/MM/dd  HH:mm:ss");
+		timeSpinner.setEditor(timeEditor);
+		timeSpinner.setValue(new Date()); // will only show the current time
+
+		JPanel jpDate = new JPanel();
+		JButton jButton = new JButton("Start");
+
+		jpDate.add(timeSpinner);
+		jpDate.add(jButton);
+
+		StartBlockListener startBlockListener = new StartBlockListener(jButton,
+				timer, timeSpinner, this);
+		jButton.addActionListener(startBlockListener);
+
+		Box box = new Box(BoxLayout.Y_AXIS);
+		box.add(logoLable);
+		box.add(panel);
+		box.add(scrollPane);
+		box.add(jpDate);
+		box.add(jtxtLogScrollPane);
+
+		window.getContentPane().add(box, BorderLayout.NORTH);
+
 		window.pack();
-		window.setSize(720, 480);
+		window.setSize(720, 680);
 		window.setVisible(true);
-
-		// Refresh the UI every half second to get the latest ping times. The
-		// event handler runs in the UI thread.
-		new Timer(1000, new ActionListener() {
-
-			public void actionPerformed(ActionEvent actionEvent) {
-				peerTableModel.updateFromPeerGroup();
-			}
-		}).start();
 	}
 
 	private class PeerTableModel extends AbstractTableModel {
@@ -433,5 +526,39 @@ public class BlockChainListener {
 			return this;
 		}
 
+	}
+	
+	class StartBlockListener implements ActionListener {
+		private JButton jButton;
+		private Timer timer;
+		private JSpinner jSpinner;
+		private BlockChainListener blockChainListener;
+
+		public StartBlockListener(JButton jButton, Timer timer,
+				JSpinner jSpinner, BlockChainListener blockChainListener) {
+			this.jButton = jButton;
+			this.timer = timer;
+			this.jSpinner = jSpinner;
+			this.blockChainListener = blockChainListener;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			Date startDateToLog = (Date) jSpinner.getValue();
+			timer.start();
+			jButton.setEnabled(false);
+			jSpinner.setEnabled(false);
+
+			try {
+				blockChainListener.setupNetwork(startDateToLog);
+			} catch (UnknownHostException e1) {
+				e1.printStackTrace();
+			} catch (BlockStoreException e1) {
+				e1.printStackTrace();
+			}
+
+			peerGroup.startAndWait();
+			peerGroup.downloadBlockChain();
+
+		}
 	}
 }
