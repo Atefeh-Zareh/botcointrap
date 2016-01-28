@@ -1,0 +1,26 @@
+c, c++ / general / additional include directories:
+---------------------------------------------------
+\pin10VS2010\mman-win32\mman-win32\trunk
+\pin10VS2010\source\include\pin
+\pin10VS2010\source\include\pin\gen
+\pin10VS2010\source\tools\InstLib
+\pin10VS2010\extras\xed-ia32\include
+\pin10VS2010\extras\components\include
+
+linker/ general/ additional library directories
+------------------------------------------------
+\pin10VS2010\mman-win32\mman-win32\trunk\Debug
+\pin10VS2010\ia32\lib
+\pin10VS2010\ia32\lib-ext
+\pin10VS2010\extras\xed-ia32\lib
+
+
+linker/input/additional dependency:
+-------------------------------------
+pin.lib
+libxed.lib
+libcpmt.lib
+libcmt.lib
+pinvm.lib
+kernel32.lib
+ntdll-32.lib

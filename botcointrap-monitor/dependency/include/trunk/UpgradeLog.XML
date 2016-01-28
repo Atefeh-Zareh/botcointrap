@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="mman">
+</Property><Property Name="Solution File" Value="D:\FP\pin10VS2010\mman-win32\mman-win32\trunk\mman.sln">
+</Property><Property Name="Date" Value="Friday, November 6, 2015">
+</Property><Property Name="Time" Value="7:57:26 AM">
+</Property></Properties><Event ErrorLevel="0" Project="mman" Source="mman.vcproj" Description="Converting project file 'D:\FP\pin10VS2010\mman-win32\mman-win32\trunk\mman.vcproj'.">
+</Event><Event ErrorLevel="1" Project="mman" Source="mman.vcproj" Description="This application has been updated to include settings related to the User Account Control (UAC) feature of Windows Vista. By default, when run on Windows Vista with UAC enabled, this application is marked to run with the same privileges as the process that launched it. This marking also disables the application from running with virtualization. You can change UAC related settings from the Property Pages of the project.">
+</Event><Event ErrorLevel="1" Project="mman" Source="mman.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="mman" Source="mman.vcproj" Description="Attribute 'Detect64BitPortabilityProblems' of 'VCCLCompilerTool' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="1" Project="mman" Source="mman.vcproj" Description="Attribute 'Detect64BitPortabilityProblems' of 'VCCLCompilerTool' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="0" Project="mman" Source="mman.vcproj" Description="Done converting to new project file 'D:\FP\pin10VS2010\mman-win32\mman-win32\trunk\mman.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="mman" Source="mman.vcproj" Description="Converted">
+</Event></UpgradeLog>
