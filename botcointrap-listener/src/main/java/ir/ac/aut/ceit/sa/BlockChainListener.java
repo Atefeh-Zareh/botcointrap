@@ -72,6 +72,10 @@ import com.google.common.collect.Lists;
  *         BitcoinJ projects
  */
 public class BlockChainListener {
+	private static final String DATE_FORMAT_PATTERN = "(yyyy/MM/dd, HH:mm:ss)";
+	private final static String outFilePath = "d://latestBlockHash.txt";
+	private static final String IMG_PATH = "./src/main/resources/logo.png";
+	
 	private NetworkParameters params;
 	private PeerGroup peerGroup;
 	private PeerTableModel peerTableModel;
@@ -79,8 +83,7 @@ public class BlockChainListener {
 
 	private final HashMap<Peer, String> reverseDnsLookups = new HashMap<Peer, String>();
 
-	private final static String outFilePath = "d://latestBlockHash.txt";
-	private static final String IMG_PATH = "./src/main/resources/logo.png";
+	
 
 	public static void main(String[] args) throws Exception {
 		BriefLogFormatter.init();
@@ -200,7 +203,7 @@ public class BlockChainListener {
 
 	private static void writeHash(String latestHash, Date receiveDate,
 			Date blockDate) throws IOException {
-		String genaralDateFormat = "(yyyy/MM/dd, HH:mm:ss)";// hh for 12 format
+		String genaralDateFormat = DATE_FORMAT_PATTERN;// hh for 12 format
 															// clock and HH for
 															// 24
 		DateFormat dateFormat = new SimpleDateFormat(genaralDateFormat);
@@ -245,7 +248,7 @@ public class BlockChainListener {
 	}
 
 	private void setupGUI() {
-		JFrame window = new JFrame("Network monitor");
+		JFrame window = new JFrame("Bitcoin Network Listener");
 		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		window.addWindowListener(new WindowAdapter() {
 			@Override
