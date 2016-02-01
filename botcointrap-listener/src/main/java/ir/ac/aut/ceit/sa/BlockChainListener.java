@@ -73,10 +73,11 @@ import com.google.common.collect.Lists;
  */
 public class BlockChainListener {
 	private static final String DATE_FORMAT_PATTERN = "(yyyy/MM/dd, HH:mm:ss)";
-	private final static String outFilePath = "d://latestBlockHash.txt";
+	private final static String outFilePath = "C:\\botcointrap\\Data\\latestBlockHash.txt";
 	private static final String IMG_PATH = "./src/main/resources/logo.png";
 	
 	private NetworkParameters params;
+	private BlockChain chain;
 	private PeerGroup peerGroup;
 	private PeerTableModel peerTableModel;
 	private PeerTableRenderer peerTableRenderer;
@@ -93,10 +94,11 @@ public class BlockChainListener {
 
 	public BlockChainListener() throws UnknownHostException,
 			BlockStoreException {
+		setupNetwork();
 		setupGUI();
 	}
 
-	private void setupNetwork(final Date startDateToLog) throws BlockStoreException,
+	private void setupNetwork() throws BlockStoreException,
 			UnknownHostException {
 		/*
 		 * Logger is inactive. to see new transactions active it.
@@ -113,7 +115,7 @@ public class BlockChainListener {
 		// node and to save block headers that are on interval boundaries, as
 		// long as they are <1 month old.
 		final BlockStore store = new MemoryBlockStore(params);
-		final BlockChain chain = new BlockChain(params, store);
+		chain = new BlockChain(params, store);
 		peerGroup = new PeerGroup(params, chain);
 
 		peerGroup.addAddress(InetAddress.getLocalHost());
@@ -142,56 +144,68 @@ public class BlockChainListener {
 				}
 			}
 		});
-
-		chain.addListener(new AbstractBlockChainListener() {
-			@Override
-			public void notifyNewBestBlock(StoredBlock block)
-					throws VerificationException {
-				/**
-				 * it start to download blocks from first block.
-				 */
-				int height = block.getHeight();
-				Sha256Hash prevHash = block.getHeader().getPrevBlockHash();
-				Sha256Hash itsHash = block.getHeader().getHash();
-
-				// if (height % params.getInterval() == 0 || freshBlock(block))
-				// {
-				System.out.println(String.format(
-						"Checkpointing block %s at height %d and prevHash=%s",
-						itsHash, height, prevHash));
-				
-				
-				
-				Date blockDate = block.getHeader().getTime();
-				/*
-				 * log the block hash to file, if blockDate is newer (larger)
-				 * than startDateToLog
-				 */
-				if ((blockDate.compareTo(startDateToLog)) > 0) {
-
-					String hexStr = HexUtils.bytesToHex(itsHash.getBytes());
-					try {
-						writeHash(hexStr, new Date(), block.getHeader().getTime());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				
-				
-				
-			}
-
-			// private boolean freshBlock(StoredBlock block) {
-			// long now = new Date().getTime() / 1000;
-			// long fiveMinutesAgo = now - (5 * 60);
-			// return (block.getHeader().getTimeSeconds() >= fiveMinutesAgo);
-			// }
-		}, Threading.SAME_THREAD);
 	}
+	
+	private void setupBlockChain(final Date startDateToLog) throws BlockStoreException,
+	UnknownHostException {
+
+chain.addListener(new AbstractBlockChainListener() {
+	@Override
+	public void notifyNewBestBlock(StoredBlock block)
+			throws VerificationException {
+		/**
+		 * it start to download blocks from first block.
+		 */
+		int height = block.getHeight();
+		Sha256Hash prevHash = block.getHeader().getPrevBlockHash();
+		Sha256Hash itsHash = block.getHeader().getHash();
+
+		// if (height % params.getInterval() == 0 || freshBlock(block))
+		// {
+		System.out.println(String.format(
+				"Checkpointing block %s at height %d and prevHash=%s",
+				itsHash, height, prevHash));
+		
+		
+		
+		Date blockDate = block.getHeader().getTime();
+		/*
+		 * log the block hash to file, if blockDate is newer (larger)
+		 * than startDateToLog
+		 */
+		if ((blockDate.compareTo(startDateToLog)) > 0) {
+
+			String hexStr = HexUtils.bytesToHex(itsHash.getBytes());
+			try {
+				writeHash(hexStr, new Date(), block.getHeader().getTime());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		
+	}
+
+	// private boolean freshBlock(StoredBlock block) {
+	// long now = new Date().getTime() / 1000;
+	// long fiveMinutesAgo = now - (5 * 60);
+	// return (block.getHeader().getTimeSeconds() >= fiveMinutesAgo);
+	// }
+}, Threading.SAME_THREAD);
+}
 
 	static FileChannel channel;
 	static {
+		File file = new File(outFilePath);
+		if(!file.exists()){
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		FileOutputStream fout = null;
 		try {
 			fout = new FileOutputStream(outFilePath);
@@ -552,7 +566,7 @@ public class BlockChainListener {
 			jSpinner.setEnabled(false);
 
 			try {
-				blockChainListener.setupNetwork(startDateToLog);
+				blockChainListener.setupBlockChain(startDateToLog);
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			} catch (BlockStoreException e1) {

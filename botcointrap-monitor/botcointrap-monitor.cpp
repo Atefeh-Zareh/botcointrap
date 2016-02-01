@@ -52,7 +52,7 @@ END_LEGAL */
 #include <time.h>
 
 //for critical section
-#include <windows.h>
+//#include <windows.h>
 
 //using namespace LEVEL_BASE;
 
@@ -149,18 +149,18 @@ static VOID RecordMem(VOID * ip, CHAR r, VOID * addr, INT32 size, LEVEL_BASE::BO
 {
 	std::string tim = getCurrentDateTime();
 	
-    CRITICAL_SECTION  g_csKeyPressedBuffer;
+    //CRITICAL_SECTION  g_csKeyPressedBuffer;
 	
 
 	// enter:
-	EnterCriticalSection(&g_csKeyPressedBuffer);
+	//EnterCriticalSection(&g_csKeyPressedBuffer);
 
 
 	TraceFile <<tim <<" " <<  ip << ": " << r << " " << setw(2+2*sizeof(ADDRINT)) << addr << " "
               << dec << setw(2) << size << " "
               << hex << setw(2+2*sizeof(ADDRINT));
     //exit
-	LeaveCriticalSection(&g_csKeyPressedBuffer);
+	//LeaveCriticalSection(&g_csKeyPressedBuffer);
 
 
     if (!isPrefetch)
@@ -191,7 +191,7 @@ VOID Instruction(INS ins, VOID *v)
         
     if (INS_IsMemoryRead(ins) && INS_IsStandardMemop(ins))
     {
-		std::string formattedDateTime = getCurrentDateTime();
+		
 
         INS_InsertPredicatedCall(
             ins, IPOINT_BEFORE, (AFUNPTR)RecordMem,
@@ -206,7 +206,7 @@ VOID Instruction(INS ins, VOID *v)
 
     if (INS_HasMemoryRead2(ins) && INS_IsStandardMemop(ins))
     {
-		std::string formattedDateTime = getCurrentDateTime();
+		
         INS_InsertPredicatedCall(
             ins, IPOINT_BEFORE, (AFUNPTR)RecordMem,
             IARG_INST_PTR,
@@ -221,7 +221,7 @@ VOID Instruction(INS ins, VOID *v)
     // the call happens iff the store will be actually executed
     if (INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins))
     {
-		std::string formattedDateTime = getCurrentDateTime();
+		
         INS_InsertPredicatedCall(
             ins, IPOINT_BEFORE, (AFUNPTR)RecordWriteAddrSize,
             IARG_MEMORYWRITE_EA,

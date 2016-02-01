@@ -1,0 +1,42 @@
+﻿Build started 1/29/2016 3:33:10 PM.
+     1>Project "D:\Work Space\Git\botcointrap\botcointrap-monitor\botcointrap-monitor.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "x64\Debug\botcointrap-monitor.lastbuildstate".
+       InitializeBuildStatus:
+         Touching "x64\Debug\botcointrap-monitor.unsuccessfulbuild".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\CL.exe /c /I"D:\Work Space\Git\botcointrap\botcointrap-monitor\\dependency\include\component-include" /I"D:\Work Space\Git\botcointrap\botcointrap-monitor\\dependency\include\InstLib" /I"D:\Work Space\Git\botcointrap\botcointrap-monitor\\dependency\include\pin" /I"D:\Work Space\Git\botcointrap\botcointrap-monitor\\dependency\include\pin\gen" /I"D:\Work Space\Git\botcointrap\botcointrap-monitor\\dependency\include\xed64-include" /Zi /nologo /W3 /WX- /Od /D TARGET_IA32 /D HOST_IA32 /D TARGET_WINDOWS /D BIGARRAY_MULTIPLIER=1 /D _CRT_SECURE_NO_DEPRECATE /D _SECURE_SCL=0 /D WIN32 /Gm- /MT /GS- /Gy /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"x64\Debug\\" /Fd"x64\Debug\vc100.pdb" /Gd /TP /wd4530 /errorReport:prompt "botcointrap-monitor.cpp" /EHs- /EHa- 
+         botcointrap-monitor.cpp
+     1>D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(457): warning C4267: '+=' : conversion from 'size_t' to 'LEVEL_BASE::ADDRINT', possible loss of data
+                 D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(467) : see reference to function template instantiation 'T LEVEL_BASE::RoundUp<LEVEL_BASE::ADDRINT>(T,size_t)' being compiled
+                 with
+                 [
+                     T=LEVEL_BASE::ADDRINT
+                 ]
+                 D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(797) : see reference to function template instantiation 'T *LEVEL_BASE::RoundUp<LEVEL_BASE::VOID>(T *,size_t)' being compiled
+                 with
+                 [
+                     T=LEVEL_BASE::VOID
+                 ]
+     1>D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(458): warning C4267: '/=' : conversion from 'size_t' to 'LEVEL_BASE::ADDRINT', possible loss of data
+     1>D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(459): warning C4267: '*=' : conversion from 'size_t' to 'LEVEL_BASE::ADDRINT', possible loss of data
+     1>D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(493): warning C4267: '/=' : conversion from 'size_t' to 'LEVEL_BASE::ADDRINT', possible loss of data
+                 D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(502) : see reference to function template instantiation 'T LEVEL_BASE::RoundDown<LEVEL_BASE::ADDRINT>(T,size_t)' being compiled
+                 with
+                 [
+                     T=LEVEL_BASE::ADDRINT
+                 ]
+                 D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(798) : see reference to function template instantiation 'T *LEVEL_BASE::RoundDown<LEVEL_BASE::VOID>(T *,size_t)' being compiled
+                 with
+                 [
+                     T=LEVEL_BASE::VOID
+                 ]
+     1>D:\Work Space\Git\botcointrap\botcointrap-monitor\dependency\include\pin\gen\util.PH(494): warning C4267: '*=' : conversion from 'size_t' to 'LEVEL_BASE::ADDRINT', possible loss of data
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Work Space\Git\botcointrap\botcointrap-monitor\Debug\botcointrap-monitor.dll" /INCREMENTAL:NO /NOLOGO /LIBPATH:"${SolutionPath}\dependency\lib\intel64-lib" /LIBPATH:"${SolutionPath}\dependency\lib\intel64-lib-ext" /LIBPATH:"${SolutionPath}\dependency\lib\extras-xed-intel64-lib" pin.lib libxed.lib libcpmt.lib libcmt.lib pinvm.lib kernel32.lib "ntdll-64.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB /MANIFEST:NO /DEBUG /PDB:"D:\Work Space\Git\botcointrap\botcointrap-monitor\Debug\botcointrap-monitor.pdb" /OPT:NOREF /TLBID:1 /ENTRY:"Ptrace_DllMainCRTStartup@12" /BASE:"0x55000000" /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Work Space\Git\botcointrap\botcointrap-monitor\Debug\botcointrap-monitor.lib" /MACHINE:X64 /DLL "x64\Debug\botcointrap-monitor.obj" /export:main 
+     1>LINK : fatal error LNK1181: cannot open input file 'pin.lib'
+     1>Done Building Project "D:\Work Space\Git\botcointrap\botcointrap-monitor\botcointrap-monitor.vcxproj" (rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:03.66
